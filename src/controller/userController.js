@@ -36,6 +36,11 @@ const createUser= async function (req,res){
 
         
         if(!isValid(email)){ return res.status(400).send({status:false,msg:"please enter the email"})}
+        
+        const dupemail= await usermodel.findOne({email:email});
+        if(dupemail){
+            return res.status(400).send({status:false,msg:'email is already present emailid must be unique'})}
+        
 
         if (!/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email)) {
             return res.status(400).send({ status: false, message: "Please provide valid Email Address" });
@@ -54,7 +59,7 @@ const createUser= async function (req,res){
         const createdata={
                 title:title,
                 fullname:fullname,
-                email:email,
+                email:dupemail,
                 password:encryptedPassword,
                 
         }
